@@ -1,3 +1,5 @@
+//Anger Zowi Remote control
+
 #include <Arduino.h>
 #include <Servo.h>
 #include <Oscillator.h>
@@ -5,13 +7,13 @@
 #define N_OSC 9
 
 #define TRIM_RR -2    //Leg Roll Right
-#define TRIM_RL 7     //Leg Roll Left
+#define TRIM_RL 5     //Leg Roll Left
 #define TRIM_YR 0     //Leg Yaw Right
 #define TRIM_YL -5     //Leg Yaw Left
 #define TRIM_SR 62      //Shoulder Right
 #define TRIM_SL -68      //Shoulder Left
 #define TRIM_AR -38     //Arm Right
-#define TRIM_AL 30    //Arm Left
+#define TRIM_AL 35    //Arm Left
 #define TRIM_H 84      //Head
 
 #define PIN_RR 12
@@ -74,11 +76,10 @@ void setup(){
   osc[8].SetTrim(TRIM_H);
 
   //ninuninu();
-  home();
-  upDown();
   
-
-  helmet();
+  upDown();
+  home();
+  
   //walk(6, 1000);
 
 /**/  checkconnection();
@@ -138,7 +139,7 @@ void loop()
   
             case 'G':
                 attack();
-                delay(350);
+                delay(300);
                 home();
                 delay(100);
                 break;
@@ -307,10 +308,13 @@ void attack(){
     osc[1].SetPosition(90);
     osc[2].SetPosition(90);
     osc[3].SetPosition(90);
-    osc[4].SetPosition(105);
-    osc[5].SetPosition(75);
+    osc[4].SetPosition(115);
+    osc[5].SetPosition(65);
     osc[6].SetPosition(40);
     osc[7].SetPosition(140);
+    delay(150);
+    osc[0].SetPosition(45);
+    osc[1].SetPosition(135);
 }
 
 void punchL(){
@@ -320,8 +324,8 @@ void punchL(){
     osc[3].SetPosition(90);
     osc[4].SetPosition(10);
     osc[5].SetPosition(170);
-    osc[6].SetPosition(90);
-    osc[7].SetPosition(30);
+    osc[6].SetPosition(120);
+    osc[7].SetPosition(10);
 }
 
 void punchR(){
@@ -331,8 +335,8 @@ void punchR(){
     osc[3].SetPosition(90);
     osc[4].SetPosition(10);
     osc[5].SetPosition(170);
-    osc[6].SetPosition(150);
-    osc[7].SetPosition(90);
+    osc[6].SetPosition(170);
+    osc[7].SetPosition(60);
 }
 
 void helmet(){
