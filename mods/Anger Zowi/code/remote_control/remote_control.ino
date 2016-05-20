@@ -4,7 +4,7 @@
 #include <Servo.h>
 #include <Oscillator.h>
 
-#define N_OSC 9
+#define N_OSC 8
 
 #define TRIM_RR -2    //Leg Roll Right
 #define TRIM_RL 5     //Leg Roll Left
@@ -30,23 +30,18 @@
 Oscillator osc[N_OSC];
 
 void run(int steps=1, int T=500);
-void walk(int steps=1, int T=1000);
+void forward(int steps=1, int T=1000);
 void backward(int steps=1, int T=1000);
-void turnL(int steps=1, int T=1000);
-void turnR(int steps=1, int T=1000);
+void turnLfwd(int steps=1, int T=1000);
+void turnRfwd(int steps=1, int T=1000);
 void moonWalkL(int steps=1, int T=1000);
 void moonWalkR(int steps=1, int T=1000);
 void upDown(int steps=1, int T=700);
 void home();
-void attack();
-void punchL();
-void punchR();
+void frontattack();
+void sidePunchL();
+void sidePunchR();
 void helmet();
-
-/**/char stateconnection=1;
-/**/char newstateconnection=1;
-/**/uint32_t countconnection=0;
-
 
 void setup(){
 /**/  digitalWrite(PIN_RESET, HIGH);
@@ -79,84 +74,125 @@ void setup(){
   
   upDown();
   home();
-  
-  //walk(6, 1000);
+  //slideR(2,1500);
+  //slideL(2,1500);
+  //forward(6, 1000);
+  home();
 
-/**/  checkconnection();
 }
 
-/**/int inactivity=0;
 char input;
 
 void loop()
-{ 
-/**/checkconnection();
-/**/if(stateconnection != newstateconnection)
-/**/{
-/**/  if(stateconnection == 0)
-/**/  {
-/**/    reset();
-/**/  }
-/**/  stateconnection = newstateconnection;
-/**/}
-  
-  
-  while(stateconnection==1)
-  {
+{  
     if(Serial.available())
     {
         while (Serial.available()) input = Serial.read();
-/**/    //Serial.print("Recibido: ");
         //Serial.println(input);
-/**/    inactivity=0;
         switch(input){
-            case 'A':
-                walk(1, 750);
+/**/        case ' ': //init characters for ATMEGA168
+/**/        case '0':
+/**/            reset();
+/**/            break;
+          
+            case 'A': //btnUp
+                forward(1, 750);
                 break;
   
-            case 'B':
-                turnR(1, 800);
+            case 'B': //btnUpRight
+                turnRfwd(1, 800);
                 break;
   
-            case 'C':
+            case 'C': //btnDown
                 backward(1, 800);
                 break;
   
-            case 'D':
-                turnL(1, 800);
+            case 'D': //btnUpLeft
+                turnLfwd(1, 800);
                 break;
   
-            case 'E':
-                upDown();
+            case 'E': //btnX
+                sidePunchR();
+                delay(350);
+                home();
+                delay(100);
                 break;
-  
-            case 'F':
-                punchR();
+
+            case 'F': //btnA
+                sidePunchR();
                 delay(350);
                 home();
                 delay(100);
                 break;
   
-            case 'G':
-                attack();
+            case 'G': //btnB
+                frontattack();
                 delay(300);
                 home();
                 delay(100);
                 break;
   
-            case 'H':
-                punchL();
+            case 'H': //btnY
+                sidePunchL();
                 delay(350);
                 home();
                 delay(100);
                 break;
   
-            case 'I':
+            case 'I': //btnSelect
                 moonWalkL();
                 break;
   
-            case 'J':
+            case 'J': //btnStart
                 moonWalkR();
+                break;
+
+            case 'a': //btnHome
+                home();
+                break;
+
+            case 'b': //btnRight
+                slideR(1,1500);
+                break;
+                
+            case 'c': //btnDownRight
+                turnRbwd(1, 800);
+                break;
+                
+            case 'd': //btnLeft
+                slideL(1,1500);
+                break;
+                
+            case 'e': //btnDownLeft
+                turnLbwd(1, 800);
+                break;            
+
+            case '1': //btn1
+                upDown();
+                break;
+  
+            case '2': //btn2
+                break;
+                
+            case '3': //btn3
+                break;
+                
+            case '4': //btn4
+                break;
+  
+            case '5': //btn5
+                break;
+  
+            case '6': //btn6
+                break;
+  
+            case '7': //btn7
+                break;
+  
+            case '8': //btn8
+                break;
+  
+            case '9': //btn9
                 break;
   
             default:
@@ -166,17 +202,8 @@ void loop()
     }
     else
     {
-/**/      inactivity++;
-/**/  //Serial.println(inactivity);
-/**/  if(inactivity == 6000)
-/**/  {       
-/**/    inactivity=0;
-/**/    //Serial.println("break");
-/**/    break; 
-/**/  }
       home();
     }
-  }
 }
 
 /**/void reset()
@@ -186,31 +213,6 @@ void loop()
 /**/  delay(3000);
 /**/}
 
-/**/void checkconnection()
-/**/{
-/**/  while (Serial.available())
-/**/  {
-/**/    Serial.read();
-/**/  }
-/**/  newstateconnection=1; //Default
-/**/  Serial.print("AT");
-/**/  Serial.flush();
-/**/  countconnection=0;
-/**/  while (Serial.available()<2 && countconnection <170000)
-/**/  {
-/**/    countconnection++;
-/**/  }
-/**/  if(Serial.available()==2)
-/**/  {
-/**/    if(Serial.read()== 'O')
-/**/    {
-/**/      if(Serial.read()== 'K')
-/**/      {
-/**/        newstateconnection=0;
-/**/      }
-/**/    }
-/**/  }
-/**/}
 
 void oscillate(int A[N_OSC], int O[N_OSC], int T, double phase_diff[N_OSC]){
     for (int i=0; i<8; i++) {
@@ -227,7 +229,7 @@ void oscillate(int A[N_OSC], int O[N_OSC], int T, double phase_diff[N_OSC]){
     }
 }
 
-void walk(int steps, int T){
+void forward(int steps, int T){
     int A[8]= {15, 15, 25, 25, 20, 20, 15, 15};
     int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
     double phase_diff[8] = {DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90),
@@ -236,7 +238,7 @@ void walk(int steps, int T){
     for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
 }
 
-void turnL(int steps, int T){
+void turnLfwd(int steps, int T){
     int A[8]= {15, 15, 10, 30, 20, 20, 15, 15};
     int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
     double phase_diff[8] = {DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90),
@@ -245,11 +247,29 @@ void turnL(int steps, int T){
     for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
 }
 
-void turnR(int steps, int T){
+void turnLbwd(int steps, int T){
+    int A[8]= {15, 15, 10, 30, 20, 20, 15, 15};
+    int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
+    double phase_diff[8] = {DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90),
+                            DEG2RAD(90), DEG2RAD(90), DEG2RAD(0), DEG2RAD(0)};
+
+    for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
+}
+
+void turnRfwd(int steps, int T){
     int A[8]= {15, 15, 30, 10, 20, 20, 15, 15};
     int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
     double phase_diff[8] = {DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90),
                             DEG2RAD(270), DEG2RAD(270), DEG2RAD(0), DEG2RAD(0)};
+
+    for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
+}
+
+void turnRbwd(int steps, int T){
+    int A[8]= {15, 15, 30, 10, 20, 20, 15, 15};
+    int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
+    double phase_diff[8] = {DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90),
+                            DEG2RAD(90), DEG2RAD(90), DEG2RAD(0), DEG2RAD(0)};
 
     for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
 }
@@ -261,6 +281,25 @@ void backward(int steps, int T){
                             DEG2RAD(90), DEG2RAD(90), DEG2RAD(0), DEG2RAD(0)};
 
     for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
+}
+
+void slideR(int steps, int T){
+    int A[8]= {40, 40, 0, 0, 0, 0, 15, 15};
+    int O[8] = {-15, 15, 0, 0, -80, 80, -30, 30}; //50/110
+    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 + 120), DEG2RAD(90), DEG2RAD(90),
+                            DEG2RAD(180), DEG2RAD(180), DEG2RAD(270), DEG2RAD(270)}; //270/180
+
+    for(int i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
+}
+
+void slideL(int steps, int T){
+    int A[8]= {40, 40, 0, 0, 0, 0, 15, 15};
+    int O[8] = {-15, 15, 0, 0, -80, 80, -30, 30};//50/110
+    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 - 120), DEG2RAD(90), DEG2RAD(90),
+                            DEG2RAD(0), DEG2RAD(0), DEG2RAD(270), DEG2RAD(270)};//90/180
+
+
+    for(int i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
 }
 
 void moonWalkR(int steps, int T){
@@ -303,7 +342,7 @@ void home(){
     osc[8].SetPosition(90);
 }
 
-void attack(){
+void frontattack(){
     osc[0].SetPosition(90);
     osc[1].SetPosition(90);
     osc[2].SetPosition(90);
@@ -317,7 +356,7 @@ void attack(){
     osc[1].SetPosition(135);
 }
 
-void punchL(){
+void sidePunchL(){
     osc[0].SetPosition(40);
     osc[1].SetPosition(70);
     osc[2].SetPosition(90);
@@ -328,7 +367,7 @@ void punchL(){
     osc[7].SetPosition(10);
 }
 
-void punchR(){
+void sidePunchR(){
     osc[0].SetPosition(110);
     osc[1].SetPosition(140);
     osc[2].SetPosition(90);
