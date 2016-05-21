@@ -29,14 +29,14 @@
 
 Oscillator osc[N_OSC];
 
-void run(int steps=1, int T=500);
-void forward(int steps=1, int T=1000);
-void backward(int steps=1, int T=1000);
-void turnLfwd(int steps=1, int T=1000);
-void turnRfwd(int steps=1, int T=1000);
-void moonWalkL(int steps=1, int T=1000);
-void moonWalkR(int steps=1, int T=1000);
-void upDown(int steps=1, int T=700);
+void run(unsigned char steps=1, short T=500);
+void forward(unsigned char steps=1, short T=1000);
+void backward(unsigned char steps=1, short T=1000);
+void turnLfwd(unsigned char steps=1, short T=1000);
+void turnRfwd(unsigned char steps=1, short T=1000);
+void moonWalkL(unsigned char steps=1, short T=1000);
+void moonWalkR(unsigned char steps=1, short T=1000);
+void upDown(unsigned char steps=1, short T=700);
 void home();
 void frontattack();
 void sidePunchL();
@@ -81,7 +81,7 @@ void setup(){
 
 }
 
-char input;
+unsigned char input, lastinput;
 
 void loop()
 {  
@@ -91,12 +91,12 @@ void loop()
         //Serial.println(input);
         switch(input){
 /**/        case ' ': //init characters for ATMEGA168
-/**/        case '0':
+///**/        case '0':
 /**/            reset();
 /**/            break;
           
             case 'A': //btnUp
-                forward(1, 750);
+                forward(1, 800);
                 break;
   
             case 'B': //btnUpRight
@@ -112,10 +112,20 @@ void loop()
                 break;
   
             case 'E': //btnX
-                sidePunchR();
-                delay(350);
-                home();
-                delay(100);
+                if(lastinput=='E')
+                {
+                  batman();
+                  delay(350);
+                  home();
+                  delay(100);
+                }
+                else
+                {
+                    outofmyway();
+                    delay(350);
+                    home();
+                    delay(100);
+                }
                 break;
 
             case 'F': //btnA
@@ -199,6 +209,7 @@ void loop()
                 home();
                 break;
         }
+        lastinput=input;
     }
     else
     {
@@ -214,120 +225,120 @@ void loop()
 /**/}
 
 
-void oscillate(int A[N_OSC], int O[N_OSC], int T, double phase_diff[N_OSC]){
-    for (int i=0; i<8; i++) {
+void oscillate(signed char A[N_OSC], signed char O[N_OSC], short T, float phase_diff[N_OSC]){
+    for (short i=0; i<8; i++) {
         osc[i].SetO(O[i]);
         osc[i].SetA(A[i]);
         osc[i].SetT(T);
         osc[i].SetPh(phase_diff[i]);
     }
-    double ref=millis();
-    for (double x=ref; x<T+ref; x=millis()){
-        for (int i=0; i<8; i++){
+    unsigned long ref=millis();
+    for (unsigned long x=ref; x<T+ref; x=millis()){
+        for (short i=0; i<8; i++){
             osc[i].refresh();
         }
     }
 }
 
-void forward(int steps, int T){
-    int A[8]= {15, 15, 25, 25, 20, 20, 15, 15};
-    int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
-    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90),
+void forward(unsigned char steps, short T){
+    signed char A[8]= {20, 20, 25, 25, 30, 30, 25, 25};
+    signed char O[8] = { -2, -1, 0, 0, -60, 60, -20, 20};//-- anda con el interior
+    float phase_diff[8] = {DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90),
                             DEG2RAD(270), DEG2RAD(270), DEG2RAD(0), DEG2RAD(0)};
 
-    for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
+    for(unsigned char i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
 }
 
-void turnLfwd(int steps, int T){
-    int A[8]= {15, 15, 10, 30, 20, 20, 15, 15};
-    int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
-    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90),
+void turnLfwd(unsigned char steps, short T){
+    signed char A[8]= {20, 20, 10, 30, 30, 30, 25, 25};
+    signed char O[8] = {-2, -1, 0, 0, -60, 60, -20, 20};
+    float phase_diff[8] = {DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90),
                             DEG2RAD(270), DEG2RAD(270), DEG2RAD(0), DEG2RAD(0)};
 
-    for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
+    for(unsigned char i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
 }
 
-void turnLbwd(int steps, int T){
-    int A[8]= {15, 15, 10, 30, 20, 20, 15, 15};
-    int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
-    double phase_diff[8] = {DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90),
-                            DEG2RAD(90), DEG2RAD(90), DEG2RAD(0), DEG2RAD(0)};
+void turnLbwd(unsigned char steps, short T){
+    signed char A[8]= {20, 20, 10, 30, 30, 30, 25, 25};
+    signed char O[8] = {-2, -1, 0, 0, -100, 100, -20, 20};
+    float phase_diff[8] = {DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90),
+                            DEG2RAD(270), DEG2RAD(270), DEG2RAD(180), DEG2RAD(180)};
 
-    for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
+    for(unsigned char i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
 }
 
-void turnRfwd(int steps, int T){
-    int A[8]= {15, 15, 30, 10, 20, 20, 15, 15};
-    int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
-    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90),
+void turnRfwd(unsigned char steps, short T){
+    signed char A[8]= {20, 20, 30, 10, 30, 30, 25, 25};
+    signed char O[8] = {-2, -1, 0, 0, -60, 60, -20, 20};
+    float phase_diff[8] = {DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90),
                             DEG2RAD(270), DEG2RAD(270), DEG2RAD(0), DEG2RAD(0)};
 
-    for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
+    for(unsigned char i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
 }
 
-void turnRbwd(int steps, int T){
-    int A[8]= {15, 15, 30, 10, 20, 20, 15, 15};
-    int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
-    double phase_diff[8] = {DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90),
-                            DEG2RAD(90), DEG2RAD(90), DEG2RAD(0), DEG2RAD(0)};
+void turnRbwd(unsigned char steps, short T){
+    signed char A[8]= {20, 20, 30, 10, 30, 30, 25, 25};
+    signed char O[8] = {-2, -1, 0, 0, -100, 100, -20, 20};
+    float phase_diff[8] = {DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90),
+                            DEG2RAD(270), DEG2RAD(270), DEG2RAD(180), DEG2RAD(180)};
 
-    for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
+    for(unsigned char i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
 }
 
-void backward(int steps, int T){
-    int A[8]= {15, 15, 25, 25, 20, 20, 15, 15};
-    int O[8] = {0, 0, 0, 0, -60, 60, -30, 30};
-    double phase_diff[8] = {DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90),
-                            DEG2RAD(90), DEG2RAD(90), DEG2RAD(0), DEG2RAD(0)};
+void backward(unsigned char steps, short T){
+    signed char A[8]= {20, 20, 25, 25, 30, 30, 25, 25};
+    signed char O[8] = {-2, -1, 0, 0, -100, 100, -20, 20};
+    float phase_diff[8] = {DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90),
+                            DEG2RAD(270), DEG2RAD(270), DEG2RAD(180), DEG2RAD(180)};
 
-    for(int i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
+    for(unsigned char i=0;i<steps;i++) oscillate(A,O, T, phase_diff);
 }
 
-void slideR(int steps, int T){
-    int A[8]= {40, 40, 0, 0, 0, 0, 15, 15};
-    int O[8] = {-15, 15, 0, 0, -80, 80, -30, 30}; //50/110
-    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 + 120), DEG2RAD(90), DEG2RAD(90),
-                            DEG2RAD(180), DEG2RAD(180), DEG2RAD(270), DEG2RAD(270)}; //270/180
-
-    for(int i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
-}
-
-void slideL(int steps, int T){
-    int A[8]= {40, 40, 0, 0, 0, 0, 15, 15};
-    int O[8] = {-15, 15, 0, 0, -80, 80, -30, 30};//50/110
-    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 - 120), DEG2RAD(90), DEG2RAD(90),
-                            DEG2RAD(0), DEG2RAD(0), DEG2RAD(270), DEG2RAD(270)};//90/180
-
-
-    for(int i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
-}
-
-void moonWalkR(int steps, int T){
-    int A[8]= {25, 25, 0, 0, 0, 0, 20, 20};
-    int O[8] = {-15, 15, 0, 0, -80, 80, 50, -50}; //50/110
-    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 + 120), DEG2RAD(90), DEG2RAD(90),
+void slideR(unsigned char steps, short T){
+    signed char A[8]= {40, 40, 0, 0, 0, 0, 15, 15};
+    signed char O[8] = {-15, 15, 0, 0, -80, 80, -30, 30}; //50/110
+    float phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 + 120), DEG2RAD(90), DEG2RAD(90),
                             DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90)}; //270/180
 
-    for(int i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
+    for(unsigned char i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
 }
 
-void moonWalkL(int steps, int T){
-    int A[8]= {25, 25, 0, 0, 0, 0, 20, 20};
-    int O[8] = {-15, 15, 0, 0, -80, 80, 50, -50};//50/110
-    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 - 120), DEG2RAD(90), DEG2RAD(90),
+void slideL(unsigned char steps, short T){
+    signed char A[8]= {40, 40, 0, 0, 0, 0, 15, 15};
+    signed char O[8] = {-15, 15, 0, 0, -80, 80, -30, 30};//50/110
+    float phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 - 120), DEG2RAD(90), DEG2RAD(90),
                             DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90)};//90/180
 
 
-    for(int i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
+    for(unsigned char i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
 }
 
-void upDown(int steps, int T){
-    int A[8]= {25, 25, 0, 0, 0, 0, 35, 35};
-    int O[8] = {-25, 25, 0, 0, -60, 60, 0, 0,};
-    double phase_diff[8] = {DEG2RAD(0), DEG2RAD(180), 0, 0,
+void moonWalkR(unsigned char steps, short T){
+    signed char A[8]= {25, 25, 0, 0, 0, 0, 20, 20};
+    signed char O[8] = {-15, 15, 0, 0, -80, 80, 50, -50}; //50/110
+    float phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 + 120), DEG2RAD(90), DEG2RAD(90),
+                            DEG2RAD(180), DEG2RAD(180), DEG2RAD(90), DEG2RAD(90)}; //270/180
+
+    for(unsigned char i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
+}
+
+void moonWalkL(unsigned char steps, short T){
+    signed char A[8]= {25, 25, 0, 0, 0, 0, 20, 20};
+    signed char O[8] = {-15, 15, 0, 0, -80, 80, 50, -50};//50/110
+    float phase_diff[8] = {DEG2RAD(0), DEG2RAD(180 - 120), DEG2RAD(90), DEG2RAD(90),
+                            DEG2RAD(0), DEG2RAD(0), DEG2RAD(90), DEG2RAD(90)};//90/180
+
+
+    for(unsigned char i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
+}
+
+void upDown(unsigned char steps, short T){
+    signed char A[8]= {25, 25, 0, 0, 0, 0, 35, 35};
+    signed char O[8] = {-25, 25, 0, 0, -60, 60, 0, 0,};
+    float phase_diff[8] = {DEG2RAD(0), DEG2RAD(180), 0, 0,
                             0, 0, DEG2RAD(0), DEG2RAD(180)};
 
-    for(int i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
+    for(unsigned char i=0;i<steps;i++)oscillate(A,O, T, phase_diff);
 }
 
 void home(){
@@ -354,6 +365,34 @@ void frontattack(){
     delay(150);
     osc[0].SetPosition(45);
     osc[1].SetPosition(135);
+}
+
+void outofmyway(){
+    osc[0].SetPosition(90);
+    osc[1].SetPosition(90);
+    osc[2].SetPosition(90);
+    osc[3].SetPosition(90);
+    osc[4].SetPosition(115);
+    osc[5].SetPosition(65);
+    osc[6].SetPosition(40);
+    osc[7].SetPosition(140);
+    delay(200);
+    osc[6].SetPosition(120);
+    osc[7].SetPosition(60);   
+}
+
+void batman(){
+    osc[0].SetPosition(90);
+    osc[1].SetPosition(90);
+    osc[2].SetPosition(90);
+    osc[3].SetPosition(90);
+    osc[4].SetPosition(85);
+    osc[5].SetPosition(85);
+    osc[6].SetPosition(120);
+    osc[7].SetPosition(60); 
+    delay(200);
+    osc[6].SetPosition(240);
+    osc[7].SetPosition(-60);  
 }
 
 void sidePunchL(){
