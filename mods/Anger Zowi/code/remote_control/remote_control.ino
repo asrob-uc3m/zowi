@@ -117,37 +117,63 @@ void loop()
                   batman();
                   delay(350);
                   home();
-                  delay(100);
+                  delay(250);
                 }
                 else
                 {
-                    outofmyway();
-                    delay(350);
-                    home();
-                    delay(100);
+                  outofmyway();
+                  delay(350);
+                  home();
                 }
                 break;
 
             case 'F': //btnA
-                sidePunchR();
-                delay(350);
-                home();
-                delay(100);
-                break;
+                if(lastinput=='F')
+                {
+                  sidePunchRwipe();
+                  delay(350);
+                  home();
+                  delay(250);
+                  break;
+                }
+                else
+                {
+                  sidePunchR();
+                  delay(350);
+                  home();
+                  break;
+                }
   
             case 'G': //btnB
-                frontattack();
-                delay(300);
-                home();
-                delay(100);
-                break;
-  
+                if(lastinput=='G')
+                {
+                  forward(1, 800);
+                  break;
+                }
+                else
+                {
+                  frontattack();
+                  delay(300);
+                  home();
+                  break;
+                }
+                  
             case 'H': //btnY
-                sidePunchL();
-                delay(350);
-                home();
-                delay(100);
-                break;
+                if(lastinput=='H')
+                {
+                  sidePunchLwipe();
+                  delay(350);
+                  home();
+                  delay(250);
+                  break;
+                }
+                else
+                {
+                  sidePunchL();
+                  delay(350);
+                  home();
+                  break;
+                }
   
             case 'I': //btnSelect
                 moonWalkL();
@@ -178,28 +204,40 @@ void loop()
                 break;            
 
             case '1': //btn1
-                upDown();
+                sidePunchLwipe();
+                delay(350);
                 break;
   
             case '2': //btn2
+               
                 break;
                 
             case '3': //btn3
+                sidePunchRwipe();
+                delay(350);
                 break;
                 
             case '4': //btn4
+                turnLfwd(1, 800);
+                turnRbwd(1, 800);
                 break;
   
             case '5': //btn5
+                upDown();
                 break;
   
             case '6': //btn6
+                turnRfwd(1, 800);
+                turnLbwd(1, 800);
                 break;
   
             case '7': //btn7
                 break;
   
             case '8': //btn8
+                batman();
+                delay(350);
+                home();
                 break;
   
             case '9': //btn9
@@ -209,7 +247,14 @@ void loop()
                 home();
                 break;
         }
-        lastinput=input;
+        if(input==lastinput)
+        {
+          lastinput=0;
+        }
+        else
+        {
+          lastinput=input;
+        }
     }
     else
     {
@@ -406,6 +451,23 @@ void sidePunchL(){
     osc[7].SetPosition(10);
 }
 
+void sidePunchLwipe(){
+    osc[0].SetPosition(40);
+    osc[1].SetPosition(70);
+    osc[2].SetPosition(90);
+    osc[3].SetPosition(90);
+    osc[4].SetPosition(10);
+    osc[5].SetPosition(170);
+    osc[6].SetPosition(120);
+    osc[7].SetPosition(10);
+    delay(200);
+    osc[5].SetPosition(105);
+    osc[7].SetPosition(-60);
+    delay(400);
+    osc[5].SetPosition(65);
+    osc[7].SetPosition(130);
+}
+
 void sidePunchR(){
     osc[0].SetPosition(110);
     osc[1].SetPosition(140);
@@ -415,6 +477,24 @@ void sidePunchR(){
     osc[5].SetPosition(170);
     osc[6].SetPosition(170);
     osc[7].SetPosition(60);
+}
+
+
+void sidePunchRwipe(){
+    osc[0].SetPosition(110);
+    osc[1].SetPosition(140);
+    osc[2].SetPosition(90);
+    osc[3].SetPosition(90);
+    osc[4].SetPosition(10);
+    osc[5].SetPosition(170);
+    osc[6].SetPosition(170);
+    osc[7].SetPosition(60);
+    delay(200);
+    osc[4].SetPosition(65);
+    osc[6].SetPosition(240);
+    delay(400);
+    osc[4].SetPosition(105);
+    osc[6].SetPosition(50);
 }
 
 void helmet(){
