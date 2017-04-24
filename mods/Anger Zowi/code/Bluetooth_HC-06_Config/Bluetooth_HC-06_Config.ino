@@ -43,20 +43,21 @@
  *            Ejemplo: AT+PIN4516, establece 4516 como PIN
  *
 -* 4_ En caso de que probando varios de estos comandos, no obtuvierais respuesta, o vierais caracteres extraños en la consola, probad con otras velocidades en la línea:
- *      Serial1.begin(9600);
+ *        int baudrate = 19200;
  *   o aseguraos de que el led del módulo parpadea. Si no parpadea, los comandos no funcionarán.
 */
 
 void setup()
 {
-Serial1.begin(9600); // Por defecto viene de fábrica con 9600
+  int baudrate = 9600;
+  Serial1.begin(baudrate); // Por defecto viene de fábrica con 9600
                      // Deben conectarse los pines cruzados
                      // RX1(Placa) -> TX(Bluetooth)
                      // TX1(Placa) -> RX(Bluetooth)
-Serial.begin(9600);
+  Serial.begin(9600);
 }
 void loop()
 {
-if(Serial1.available()) Serial.write(Serial1.read());
-if(Serial.available()) Serial1.write(Serial.read());
+  if(Serial1.available()) Serial.write(Serial1.read());
+  if(Serial.available()) Serial1.write(Serial.read());
 }
