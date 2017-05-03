@@ -11,7 +11,7 @@
 #define TRIM_YR 0     //Leg Yaw Right
 #define TRIM_YL -5     //Leg Yaw Left
 #define TRIM_SR 62      //Shoulder Right
-#define TRIM_SL -68      //Shoulder Left
+#define TRIM_SL -72 //-68      //Shoulder Left
 #define TRIM_AR -38     //Arm Right
 #define TRIM_AL 42//35    //Arm Left
 #define TRIM_H 84      //Head
