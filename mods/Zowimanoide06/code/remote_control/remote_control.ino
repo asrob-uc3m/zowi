@@ -1,4 +1,4 @@
-//Anger Zowi Remote control
+//Zowimanoide06 Remote control
 
 #include <Arduino.h>
 #include <Servo.h>
@@ -16,16 +16,16 @@
 #define TRIM_AL 42//35    //Arm Left
 #define TRIM_H 84      //Head
 
-#define PIN_RR 12
-#define PIN_RL 11
-#define PIN_YR 3
-#define PIN_YL 2
-#define PIN_SR 9
-#define PIN_SL 5
-#define PIN_AR 10
-#define PIN_AL 4
-#define PIN_H 6
-/**/#define PIN_RESET A5
+#define PIN_RR 10
+#define PIN_RL 9
+#define PIN_YR 11
+#define PIN_YL 8
+#define PIN_SR 12
+#define PIN_SL 6
+#define PIN_AR 13
+#define PIN_AL 7
+#define PIN_H 5
+/**/#define PIN_RESET A0
 
 Oscillator osc[N_OSC];
 
@@ -46,7 +46,7 @@ void helmet();
 void setup(){
 /**/  digitalWrite(PIN_RESET, HIGH);
 
-/**/  Serial.begin(19200);
+/**/  Serial.begin(57600);
 
 /**/  pinMode(PIN_RESET, OUTPUT);
 
@@ -90,7 +90,7 @@ void loop()
         while (Serial.available()) input = Serial.read();
         //Serial.println(input);
         switch(input){
-/**/        case ' ': //init characters for ATMEGA168
+/**/        case ' ': //init characters for ATMEGA328
 ///**/        case '0':
 /**/            reset();
 /**/            break;
