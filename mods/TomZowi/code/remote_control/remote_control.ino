@@ -3,18 +3,9 @@
 #include <Arduino.h>
 #include <Servo.h>
 #include <Oscillator.h>
+#include <EEPROM.h>
 
 #define N_OSC 8
-
-#define TRIM_RR 12    //Leg Roll Right
-#define TRIM_RL 5     //Leg Roll Left
-#define TRIM_YR 5     //Leg Yaw Right
-#define TRIM_YL -5     //Leg Yaw Left
-#define TRIM_SR 62      //Shoulder Right
-#define TRIM_SL -72 //-68      //Shoulder Left
-#define TRIM_AR -38     //Arm Right
-#define TRIM_AL 42//35    //Arm Left
-#define TRIM_H 84      //Head
 
 /*
          --------------- 
@@ -30,16 +21,23 @@
          ------   ------
 */
 
-#define PIN_RR 10
-#define PIN_RL 9
-#define PIN_YR 11
-#define PIN_YL 8
-#define PIN_SR 12
-#define PIN_SL 6
-#define PIN_AR 13
-#define PIN_AL 7
-#define PIN_H 5
+char PIN_RR=  10;
+char PIN_RL=  9;
+char PIN_YR=  11;
+char PIN_YL=  8;
+char PIN_SR=  12;
+char PIN_SL=  6;
+char PIN_AR=  13;
+char PIN_AL=  7;
+char PIN_H = 5;
 /**/#define PIN_RESET A0
+
+#define TRIM_SR 62      //Shoulder Right
+#define TRIM_SL -72 //-68      //Shoulder Left
+#define TRIM_AR -38     //Arm Right
+#define TRIM_AL 42//35    //Arm Left
+#define TRIM_H 84      //Head
+
 
 Oscillator osc[N_OSC];
 
@@ -63,7 +61,7 @@ void setup(){
 /**/  Serial.begin(57600);
 
 /**/  pinMode(PIN_RESET, OUTPUT);
-
+    
   osc[0].attach(PIN_RR);
   osc[1].attach(PIN_RL);
   osc[2].attach(PIN_YR);
@@ -74,10 +72,10 @@ void setup(){
   osc[7].attach(PIN_AL);
   //osc[8].attach(PIN_H);
 
-  osc[0].SetTrim(TRIM_RR);
-  osc[1].SetTrim(TRIM_RL);
-  osc[2].SetTrim(TRIM_YR);
-  osc[3].SetTrim(TRIM_YL);
+  osc[0].SetTrim(EEPROM.read(27));//RR
+  osc[1].SetTrim(EEPROM.read(28));//RL
+  osc[2].SetTrim(EEPROM.read(25));//YR
+  osc[3].SetTrim(EEPROM.read(26));//YL
   osc[4].SetTrim(TRIM_SR);
   osc[5].SetTrim(TRIM_SL);
   osc[6].SetTrim(TRIM_AR);
@@ -196,7 +194,9 @@ void loop()
             case 'J': //btnStart
                 moonWalkR();
                 break;
-
+            case 'T':
+            showAutoTrimMenu();
+            break;
             case 'a': //btnHome
                 home();
                 break;
@@ -517,3 +517,65 @@ void helmet(){
     delay(1000);
     osc[8].SetPosition(90);
 }
+
+void showAutoTrimMenu(){
+    Serial.println("trimeando");
+    String firstOption = "";
+    Serial.println("Selecciona servo (YR,YL, RR, RL) o pulsa la tecla q para salir:");
+    while(firstOption != "q"){
+        if((firstOption == "YR") || (firstOption == "YL") || (firstOption == "RR") || (firstOption == "RL")){
+            autoTrimServo(firstOption);
+        }else{
+            recibido
+        }
+        firstOption = Serial.read();
+    }
+}
+void autoTrimServo(String servoToTrim){
+    char command = ' ';
+    char trimEPPROMPosition = 25;
+    char trimOscillatorArrayPosition = 0;
+    if(servoToTrim == "YR"){
+        trimEPPROMPosition = 25;
+        trimOscillatorArrayPosition = 2;
+    }else if(servoToTrim == "YL"){
+        trimEPPROMPosition = 26;
+        trimOscillatorArrayPosition = 3;
+    }else if(servoToTrim == "RR"){
+        trimEPPROMPosition = 27;
+        trimOscillatorArrayPosition = 0;
+    }else if(servoToTrim == "RL"){
+        trimEPPROMPosition = 28;
+        trimOscillatorArrayPosition = 1;
+    }
+
+    Serial.print("Trimeando el servo ");
+    Serial.print(servoToTrim);
+    Serial.print("en la posicion de memoria");
+    Serial.println(trimEPPROMPosition);
+    char trimValue = EEPROM.read(trimEPPROMPosition);
+    Serial.println("Pulsa la tecla q para salir, las teclas + o - para mover el trim y k para establecer el trim:");
+    while(command != 'q'){
+        switch(command){
+            case '+':
+                trimValue += 5;
+                 osc[trimOscillatorArrayPosition].SetTrim(trimValue);
+            break;
+            case '-':
+            trimValue += 5;
+                 osc[trimOscillatorArrayPosition].SetTrim(trimValue);
+            break;
+            case 'k':
+             EEPROM.write(trimEPPROMPosition, trimValue);
+            break;
+        }
+        command = Serial.read();
+    }
+}
+
+
+
+
+
+
+
