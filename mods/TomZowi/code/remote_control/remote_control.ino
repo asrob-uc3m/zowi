@@ -6,15 +6,29 @@
 
 #define N_OSC 8
 
-#define TRIM_RR -2    //Leg Roll Right
+#define TRIM_RR 12    //Leg Roll Right
 #define TRIM_RL 5     //Leg Roll Left
-#define TRIM_YR 0     //Leg Yaw Right
+#define TRIM_YR 5     //Leg Yaw Right
 #define TRIM_YL -5     //Leg Yaw Left
 #define TRIM_SR 62      //Shoulder Right
 #define TRIM_SL -72 //-68      //Shoulder Left
 #define TRIM_AR -38     //Arm Right
 #define TRIM_AL 42//35    //Arm Left
 #define TRIM_H 84      //Head
+
+/*
+         --------------- 
+        |               |
+        |     O   O     |
+        |               |
+ YR ==> |               | <== YL
+         --------------- 
+            ||     ||
+            ||     ||
+            ||     ||
+ RR ==>  ------   ------  <== RL
+         ------   ------
+*/
 
 #define PIN_RR 10
 #define PIN_RL 9
