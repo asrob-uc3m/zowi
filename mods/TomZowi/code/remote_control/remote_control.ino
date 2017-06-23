@@ -5,7 +5,7 @@
 #include <Oscillator.h>
 #include <EEPROM.h>
 
-#define N_OSC 8
+#define N_OSC 9
 
 /*
          --------------- 
@@ -32,11 +32,16 @@ char PIN_AL=  7;
 char PIN_H = 5;
 /**/#define PIN_RESET A0
 
-#define TRIM_SR 62      //Shoulder Right
-#define TRIM_SL -72 //-68      //Shoulder Left
-#define TRIM_AR -38     //Arm Right
-#define TRIM_AL 42//35    //Arm Left
-#define TRIM_H 84      //Head
+#define TRIM_YR 10      
+#define TRIM_RR 12      
+#define TRIM_YL -5      
+#define TRIM_RL 10      
+
+#define TRIM_SR -50      //Shoulder Right
+#define TRIM_SL 20       //Shoulder Left
+#define TRIM_AR 75     //Arm Right
+#define TRIM_AL -100   //Arm Left
+#define TRIM_H 0      //Head
 
 
 Oscillator osc[N_OSC];
@@ -70,12 +75,13 @@ void setup(){
   osc[5].attach(PIN_SL);
   osc[6].attach(PIN_AR);
   osc[7].attach(PIN_AL);
-  //osc[8].attach(PIN_H);
+  osc[8].attach(PIN_H);
 
-  osc[0].SetTrim(EEPROM.read(27));//RR
-  osc[1].SetTrim(EEPROM.read(28));//RL
-  osc[2].SetTrim(EEPROM.read(25));//YR
-  osc[3].SetTrim(EEPROM.read(26));//YL
+  //osc[0].SetTrim(EEPROM.read(27));//RR
+  osc[0].SetTrim(TRIM_RR);//RR
+  osc[1].SetTrim(TRIM_RL);//RL
+  osc[2].SetTrim(TRIM_YR);//YR
+  osc[3].SetTrim(TRIM_YL);//YL
   osc[4].SetTrim(TRIM_SR);
   osc[5].SetTrim(TRIM_SL);
   osc[6].SetTrim(TRIM_AR);
@@ -285,7 +291,7 @@ void loop()
 
 
 void oscillate(signed char A[N_OSC], signed char O[N_OSC], short T, float phase_diff[N_OSC]){
-    for (short i=0; i<8; i++) {
+    for (short i=1; i<9; i++) {
         osc[i].SetO(O[i]);
         osc[i].SetA(A[i]);
         osc[i].SetT(T);
@@ -293,7 +299,7 @@ void oscillate(signed char A[N_OSC], signed char O[N_OSC], short T, float phase_
     }
     unsigned long ref=millis();
     for (unsigned long x=ref; x<T+ref; x=millis()){
-        for (short i=0; i<8; i++){
+        for (short i=1; i<9; i++){
             osc[i].refresh();
         }
     }
@@ -526,7 +532,7 @@ void showAutoTrimMenu(){
         if((firstOption == "YR") || (firstOption == "YL") || (firstOption == "RR") || (firstOption == "RL")){
             autoTrimServo(firstOption);
         }else{
-            recibido
+            //recibido
         }
         firstOption = Serial.read();
     }
