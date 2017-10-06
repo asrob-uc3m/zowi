@@ -37,10 +37,10 @@ char PIN_H = 5;
 #define TRIM_YL -5      
 #define TRIM_RL 10      
 
-#define TRIM_SR -50      //Shoulder Right
-#define TRIM_SL 20       //Shoulder Left
-#define TRIM_AR 75     //Arm Right
-#define TRIM_AL -100   //Arm Left
+#define TRIM_SR 70      //Shoulder Right
+#define TRIM_SL -83       //Shoulder Left
+#define TRIM_AR -40      //Arm Right
+#define TRIM_AL 20   //Arm Left
 #define TRIM_H 0      //Head
 
 
@@ -291,7 +291,7 @@ void loop()
 
 
 void oscillate(signed char A[N_OSC], signed char O[N_OSC], short T, float phase_diff[N_OSC]){
-    for (short i=1; i<9; i++) {
+    for (short i=0; i<8; i++) {
         osc[i].SetO(O[i]);
         osc[i].SetA(A[i]);
         osc[i].SetT(T);
@@ -299,7 +299,7 @@ void oscillate(signed char A[N_OSC], signed char O[N_OSC], short T, float phase_
     }
     unsigned long ref=millis();
     for (unsigned long x=ref; x<T+ref; x=millis()){
-        for (short i=1; i<9; i++){
+        for (short i=0; i<8; i++){
             osc[i].refresh();
         }
     }
