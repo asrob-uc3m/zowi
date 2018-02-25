@@ -12,7 +12,7 @@
 
   A Zowi Maker Faire Robot ready to fight!
 
-  This project is based in the amazing work of:
+  This project is based on the amazing work of:
 
   - Javier Isabel: Creator of the original Zowi and Zowihumanoid
 
