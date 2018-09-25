@@ -1,4 +1,10 @@
-#Zowi mods
+# Zowi mods
+
+## Code:
+
+Upload the following file to your Arduino board: https://github.com/asrob-uc3m/zowi/tree/master/mods/MicroRaider/code/arduino
+
+## Models:
 
 | JIM | Scopum | Micro Raider |
 | ------------- | ------------- | ------------- |
