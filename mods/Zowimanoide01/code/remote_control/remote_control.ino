@@ -6,25 +6,26 @@
 
 #define N_OSC 8
 
-#define TRIM_RR -2    //Leg Roll Right
-#define TRIM_RL 5     //Leg Roll Left
-#define TRIM_YR 0     //Leg Yaw Right
-#define TRIM_YL -5     //Leg Yaw Left
-#define TRIM_SR 62      //Shoulder Right
-#define TRIM_SL -72 //-68      //Shoulder Left
-#define TRIM_AR -38     //Arm Right
-#define TRIM_AL 42//35    //Arm Left
-#define TRIM_H 84      //Head
+  //TRIM Value -180 to 180
+#define TRIM_RR 13     //Leg Roll Right
+#define TRIM_RL -73     //Leg Roll Left
+#define TRIM_YR 45    //Leg Yaw Right 
+#define TRIM_YL -18    //Leg Yaw Left 
+#define TRIM_SR 75     //Shoulder Right
+#define TRIM_SL -100    //Shoulder Left 
+#define TRIM_AR 120    //Arm Right
+#define TRIM_AL 120   //Arm Left 
+#define TRIM_H 0     //Head
 
-#define PIN_RR 10
-#define PIN_RL 9
-#define PIN_YR 11
-#define PIN_YL 8
-#define PIN_SR 12
-#define PIN_SL 6
-#define PIN_AR 13
-#define PIN_AL 7
-#define PIN_H 5
+#define PIN_RR 4
+#define PIN_RL 5
+#define PIN_YR 6 
+#define PIN_YL 7 
+#define PIN_SR 9
+#define PIN_SL 11 
+#define PIN_AR 8
+#define PIN_AL 12
+#define PIN_H 10
 /**/#define PIN_RESET A0
 
 Oscillator osc[N_OSC];
@@ -46,7 +47,7 @@ void helmet();
 void setup(){
 /**/  digitalWrite(PIN_RESET, HIGH);
 
-/**/  Serial.begin(57600);
+/**/  Serial.begin(19200);
 
 /**/  pinMode(PIN_RESET, OUTPUT);
 
@@ -58,7 +59,7 @@ void setup(){
   osc[5].attach(PIN_SL);
   osc[6].attach(PIN_AR);
   osc[7].attach(PIN_AL);
-  //osc[8].attach(PIN_H);
+  osc[8].attach(PIN_H);
 
   osc[0].SetTrim(TRIM_RR);
   osc[1].SetTrim(TRIM_RL);
@@ -90,7 +91,7 @@ void loop()
         while (Serial.available()) input = Serial.read();
         //Serial.println(input);
         switch(input){
-/**/        case ' ': //init characters for ATMEGA328
+/**/        case ' ': //init characters for ATMEGA168
 ///**/        case '0':
 /**/            reset();
 /**/            break;
